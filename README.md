@@ -9,6 +9,7 @@ bx_vimim_dict
 * @Version : 0.0.1
 * @Desc    : Vim 字典输入
 *            插件编码参考源自[vimim-wubi](http://code.google.com/p/vimim-wubi)
+
 ---------------------------------------------------------------------------
 
 说明
