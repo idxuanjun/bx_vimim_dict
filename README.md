@@ -26,8 +26,12 @@ bx_vimim_dict
 
 安装
 ----
+
 请将本项目打包下载，目录“bx_vimim_dict”放在 Vim插件目录下，和其它插件一样使用。
 
 使用说明
 --------
 
+* 把 bx_vimim_dict.vim 和字典文件 bx_vimim_dict.txt 放到 vim 的 plugin 目录下即可。
+* 中英文输入切换使用 CTRL-L
+* 中英文标点切换使用 CTRL-\
