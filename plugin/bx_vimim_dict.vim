@@ -1,12 +1,12 @@
 "=============================================================================
-"     FileName: vimim_dict.vim
+"     FileName: bx_vimim_dict.vim
 "         Desc: 通过录入编码输出字典对应的信息
-"               插件修改来源于[vimim-wubi](http://code.google.com/p/vimim-wubi)
+"               插件编码参考源自[vimim-wubi](http://code.google.com/p/vimim-wubi)
 "       Author: Xuan Jun
 "      License: GNU Lesser General Public License
 "        Email: idxuanjun@qq.com
 "     HomePage: http://blog.csdn.net/idxuanjun
-"               https://github.com/idxuanjun/vimim_dict
+"               https://github.com/idxuanjun/bx_vimim_dict
 "      Version: 0.0.1
 "   LastChange: 2014-04-04 15:57:24
 "      History:
@@ -31,16 +31,16 @@
 "
 " 码表中存在没有 ljf 但有 ljfd 的情况, 但使用正则的 ^ 是可以
 " 正确匹配到的.
-if exists("b:loaded_vimim_dict") || &cp || v:version < 700
+if exists("b:loaded_bx_vimim_dict") || &cp || v:version < 700
     finish
 endif
-let b:loaded_vimim_dict = 1
+let b:loaded_bx_vimim_dict = 1
 scriptencoding utf-8
 let s:path=expand("<sfile>:p:h")."/"
 "let g:save_completefunc = &completefunc
 "let &completefunc = 'CVimIM_Dict'
-inoremap<silent><expr> <C-_> <SID>Toggle()
-call histadd("debug","vimim_dict.vim file loaded")
+inoremap<silent><expr> <C-L> <SID>Toggle()
+call histadd("debug","bx_vimim_dict.vim file loaded")
 
 function CVimIM_Dict(findstart, keyboard)
     "补全函数
@@ -107,7 +107,7 @@ endfunction
 function s:GetTable()
     call histadd("debug", "GetTable()")
     "读取码表
-    let tableFile = s:path . 'vimim_dict.txt'
+    let tableFile = s:path . 'bx_vimim_dict.txt'
     try
         let table = readfile(tableFile)
     catch /E484:/
@@ -281,7 +281,7 @@ function s:Init()
     if !exists('g:table')
         let g:table = s:GetTable()
         "起始字母的在码表中的开始行
-        let g:charFirst = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, 43, 45, 47, 48, 51]
+        let g:charFirst = [1, 515, 3154, 4295, 7027, 7383, 8933, 11212, 13784, 15844, 18606, 20087, 22604, 24560, 25835, 25908, 27344, 29197, 30278, 31515, 33766, 36363, 38804, 40361, 42896, 46089]
     endif
     if !exists('b:chinesePunc')
         " 标点的状态要在中英文间保持
