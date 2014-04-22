@@ -327,7 +327,7 @@ function s:Exit()
     let s:typeLen = 0
     "let b:chinesePunc = 0
     let b:chineseMode = 0
-    " 还原 [a-y] 的 map
+    " 还原 [a-z] 的 map
     call s:UnMapAnyKeys()
     " 还原特殊键的 map
     iunmap<buffer> <Space>
@@ -355,10 +355,11 @@ function s:Exit()
     iunmap<buffer> `
     iunmap<buffer> ~
     iunmap<buffer> {
+    iunmap<buffer> }
     iunmap<buffer> <
-    "iunmap<buffer> >
+    iunmap<buffer> >
     iunmap<buffer> (
-    "iunmap<buffer> )
+    iunmap<buffer> )
     iunmap<buffer> '
     iunmap<buffer> "
     return ''
@@ -527,13 +528,14 @@ function s:MapChinesePunc()
     inoremap<buffer> $ <C-R>=<SID>PuncIn()<CR>￥
     inoremap<buffer> ` <C-R>=<SID>PuncIn()<CR>`
     inoremap<buffer> ~ <C-R>=<SID>PuncIn()<CR>～
-    inoremap<buffer> < <C-R>=<SID>PuncIn()<CR>《》<++><Left><Left><Left><Left><Left>
-    "inoremap<buffer> > <C-R>=<SID>PuncIn()<CR>》
-    inoremap<buffer> ( <C-R>=<SID>PuncIn()<CR>（）<++><Left><Left><Left><Left><Left>
-    "inoremap<buffer> ) <C-R>=<SID>PuncIn()<CR>）
-    inoremap<buffer> { <C-R>=<SID>PuncIn()<CR>『』<++><Left><Left><Left><Left><Left>
-    inoremap<buffer> ' <C-R>=<SID>PuncIn()<CR>‘’<++><Left><Left><Left><Left><Left>
-    inoremap<buffer> " <C-R>=<SID>PuncIn()<CR>“”<++><Left><Left><Left><Left><Left>
+    inoremap<buffer> < <C-R>=<SID>PuncIn()<CR>《》
+    inoremap<buffer> > <C-R>=<SID>PuncIn()<CR>》
+    inoremap<buffer> ( <C-R>=<SID>PuncIn()<CR>（）<Left>
+    inoremap<buffer> ) <C-R>=<SID>PuncIn()<CR>）
+    inoremap<buffer> { <C-R>=<SID>PuncIn()<CR>『』<Left>
+    inoremap<buffer> } <C-R>=<SID>PuncIn()<CR>』
+    inoremap<buffer> ' <C-R>=<SID>PuncIn()<CR>‘’<Left>
+    inoremap<buffer> " <C-R>=<SID>PuncIn()<CR>“”<Left>
 endfunction
 
 function s:UnMapChinesePunc()
@@ -547,10 +549,6 @@ function s:UnMapChinesePunc()
     inoremap<buffer> / <C-R>=<SID>PuncIn()<CR>/
     inoremap<buffer> ! <C-R>=<SID>PuncIn()<CR>!
     inoremap<buffer> @ <C-R>=<SID>PuncIn()<CR>@
-    inoremap<buffer> < <C-R>=<SID>PuncIn()<CR><
-    "inoremap<buffer> > <C-R>=<SID>PuncIn()<CR>>
-    inoremap<buffer> ( <C-R>=<SID>PuncIn()<CR>(
-    "inoremap<buffer> ) <C-R>=<SID>PuncIn()<CR>)
     inoremap<buffer> ^ <C-R>=<SID>PuncIn()<CR>^
     inoremap<buffer> _ <C-R>=<SID>PuncIn()<CR>_
     inoremap<buffer> # <C-R>=<SID>PuncIn()<CR>#
@@ -558,7 +556,12 @@ function s:UnMapChinesePunc()
     inoremap<buffer> $ <C-R>=<SID>PuncIn()<CR>$
     inoremap<buffer> ` <C-R>=<SID>PuncIn()<CR>`
     inoremap<buffer> ~ <C-R>=<SID>PuncIn()<CR>~
+    inoremap<buffer> < <C-R>=<SID>PuncIn()<CR><
+    inoremap<buffer> > <C-R>=<SID>PuncIn()<CR>>
+    inoremap<buffer> ( <C-R>=<SID>PuncIn()<CR>(
+    inoremap<buffer> ) <C-R>=<SID>PuncIn()<CR>)
     inoremap<buffer> { <C-R>=<SID>PuncIn()<CR>{
+    inoremap<buffer> } <C-R>=<SID>PuncIn()<CR>}
     inoremap<buffer> ' <C-R>=<SID>PuncIn()<CR>'
     inoremap<buffer> " <C-R>=<SID>PuncIn()<CR>"
 endfunction
