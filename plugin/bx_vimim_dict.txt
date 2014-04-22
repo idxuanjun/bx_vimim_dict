@@ -1,3 +1,13 @@
+#======================================================================
+#     FileName: bx_vimim_dict.txt
+#         Desc: 小鹤双拼输入法码表
+#               可以修改成适合自己的字典
+#       Author: Xuan Jun (idxuanjun@qq.com)
+#         Link: http://blog.csdn.net/idxuanjun
+#      Version: 0.0.1
+#   LastChange: 2014-04-22 18:55:34
+#      History:
+#======================================================================
 
 a       啊
 aa      阿
@@ -5114,6 +5124,7 @@ dhlt    大祸临头
 dhlu    挡路 调虎离山
 dhlv    大海捞针
 dhm     档
+dhme    𣗋
 dhmm    当面
 dhn     当年
 dhnm    当年
@@ -5335,6 +5346,7 @@ diw     帝
 diwa    低洼
 diwf    低温
 diwh    帝王
+diwj    𤧛
 diwo    敌我
 diwu    第五
 diww    地位
@@ -17850,7 +17862,7 @@ jskb    尖酸刻薄
 jskl    窘况
 jsky    窘困
 jso     炅
-jsoh    炅
+jsoh    炅 䐃
 jsp     窘迫
 jspo    窘迫
 jsq     计算器
@@ -21135,6 +21147,7 @@ lkve    领着
 lkvi    灵芝
 lkvs    舲
 lkvu    领主
+lkvv    〇
 lkw     玲
 lkwd    另外
 lkws    玲
@@ -21676,6 +21689,7 @@ lozo    落座
 lozx    逻
 lp      列
 lpa     鬣
+lpav    𫚭
 lpb     列表
 lpbc    猎豹
 lpbm    裂变
@@ -33199,6 +33213,7 @@ tsyc    童谣
 tsye    同业
 tsyh    同样
 tsyi    同意
+tsyk    𫍣
 tsyr    同源
 tsys    通用
 tsz     通

@@ -1,11 +1,10 @@
 "=============================================================================
-"     FileName: bx_vimim_dict.vim
+"     FileName: bx_vimim_dict.vim (idxuanjun@qq.com)
 "         Desc: 通过录入编码输出字典对应的信息
 "               插件编码参考源自[vimim-wubi](http://code.google.com/p/vimim-wubi)
 "       Author: Xuan Jun
 "      License: GNU Lesser General Public License
-"        Email: idxuanjun@qq.com
-"     HomePage: http://blog.csdn.net/idxuanjun
+"         Link: http://blog.csdn.net/idxuanjun
 "               https://github.com/idxuanjun/bx_vimim_dict
 "      Version: 0.0.1
 "   LastChange: 2014-04-04 15:57:24
@@ -40,14 +39,12 @@ let s:path=expand("<sfile>:p:h")."/"
 "let g:save_completefunc = &completefunc
 "let &completefunc = 'CVimIM_Dict'
 inoremap<silent><expr> <C-L> <SID>Toggle()
-call histadd("debug","bx_vimim_dict.vim file loaded")
 
 function CVimIM_Dict(findstart, keyboard)
     "补全函数
     "首先必须要返回一个起始点, 从超始点到当前光标处, 即是需要
     "匹配的字符.
     "返回的结果, 会替换从起始点到当前光标处的字符.
-call histadd("debug", printf("CVimIM_Dict() a:findstart=%d", a:findstart))
 if a:findstart
     "主要通过 s:typeLen 来控制 <BS> <Enter> <Space> 这些键的行为
     "s:typeLen 在 Init() 中定义.
@@ -56,12 +53,10 @@ if a:findstart
     "let position = getpos('.')
     let columnNum = col('.') - 1
     let start = columnNum - s:typeLen
-    call histadd("debug", printf("CVimIM_Dict() columnNum=%d, start=%d", columnNum, start))
     return start
 else
     "读取码表的操作在 Init() 函数中,
     "匹配码表的操作在 AnyKey() 函数中.
-    call histadd("debug", printf("CVimIM_Dict() s:matchFrom=%d", s:matchFrom))
     if s:matchFrom < 0
         return ''
     else
@@ -90,7 +85,9 @@ else
                 if s:matchFrom + i < tableLen
                     let nowLine = g:table[s:matchFrom + i]
                     let res = extend(res, split(nowLine)[1:])
-                    if g:table[s:matchFrom + i + 1][:2] != nowLine[:2]
+                    if s:matchFrom + i + 1 >= tableLen
+                        break
+                    elseif g:table[s:matchFrom + i + 1][:2] != nowLine[:2]
                         break
                     endif
                 endif
@@ -105,7 +102,6 @@ endif
 endfunction
 
 function s:GetTable()
-    call histadd("debug", "GetTable()")
     "读取码表
     let tableFile = s:path . 'bx_vimim_dict.txt'
     try
@@ -118,11 +114,9 @@ endfunction
 
 function s:GetMatchFrom(keyboard)
     "把参数 keyboard 拿到 g:table 去匹配，返回字典内的行
-    call histadd("debug","GetMatchFrom()")
     let patterns = '^' . a:keyboard
     let charFirstIndex = char2nr(a:keyboard[0]) - 97
     let keyboardLen = len(a:keyboard)
-    call histadd("debug", printf("GetMatchFrom() patterns=%s, charFirstIndex=%d, keyboardLen=%d", patterns, charFirstIndex, keyboardLen))
 
     if keyboardLen < 1
         return -1
@@ -151,7 +145,6 @@ function s:GetMatchFrom(keyboard)
 endfunction
 
 function s:MapAnyKeys()
-    "ValidKeys = [a-y]
     inoremap<buffer><silent> a a<C-R>=<SID>AnyKey('a')<CR>
     inoremap<buffer><silent> b b<C-R>=<SID>AnyKey('b')<CR>
     inoremap<buffer><silent> c c<C-R>=<SID>AnyKey('c')<CR>
@@ -231,7 +224,6 @@ function s:Init()
     " 此函数还会设置相关的 map
     " 备份并重新指定
     " 插入模式补全 CTRL-X CTRL-U 使用的函数
-    call histadd("debug", "Init()")
     let b:save_completefunc = &completefunc
     let &l:completefunc = 'CVimIM_Dict'
     " 备份并重新指定
@@ -281,12 +273,12 @@ function s:Init()
     if !exists('g:table')
         let g:table = s:GetTable()
         "起始字母的在码表中的开始行
-        let g:charFirst = [1, 515, 3154, 4295, 7027, 7383, 8933, 11212, 13784, 15844, 18606, 20087, 22604, 24560, 25835, 25908, 27344, 29197, 30278, 31515, 33766, 36363, 38804, 40361, 42896, 46089]
+        let g:charFirst = [12, 525, 3164, 4305, 7039, 7395, 8945, 11224, 13796, 15856, 18618, 20099, 22618, 24574, 25849, 25922, 27358, 29211, 30292, 31529, 33781, 36378, 38819, 40376, 42911, 46104]
     endif
     if !exists('b:chinesePunc')
         " 标点的状态要在中英文间保持
-        " let b:chinesePunc = 1
-        let b:chinesePunc = 0
+         let b:chinesePunc = 1
+        "let b:chinesePunc = 0
     endif
     if b:chinesePunc > 0
         call s:MapChinesePunc()
@@ -317,7 +309,6 @@ function s:Exit()
     " 它会还原以前的环境变量, 同时把一些变量设置成默认,
     " 它还会 unmap 一些映射.
     " 还原环境变量设置
-    call histadd("debug", "Exit()")
     let &l:completeopt = b:save_completeopt
     let &l:completefunc = b:save_completefunc
     let &l:iminsert = b:save_iminsert
@@ -375,8 +366,6 @@ endfunction
 
 function <SID>AnyKey(key)
     "[a-z]在输入过程中的行为
-    call histadd("debug","AnyKey()")
-    call histadd("debug", printf("AnyKey() s:typeLen: %d", s:typeLen))
     let s:typeLen += 1
     if s:typeLen > 1
         "考虑在按了 <C-N> <C-P> 后继续输入的情况
@@ -428,7 +417,6 @@ function s:RefreshMatch()
     "刷新匹配列表.
     "在更新计数器 s:typeLen 时注意考虑是否要调用.
     "考虑 <Space> <BS> <Enter> 这些行为时考虑是否要调用.
-    call histadd("debug","RefreshMatch()")
     "let position = getpos('.')
     let lineNum = line('.')
     let columnNum = col('.') - 1
@@ -436,7 +424,6 @@ function s:RefreshMatch()
     let from = columnNum - s:typeLen
     let to = columnNum - 1
     let s:matchFrom = s:GetMatchFrom(temstr[from : to])
-    call histadd("debug", printf("RefreshMatch() s:matchFrom=%d, temstr=%s, from=%d, to=%d", s:matchFrom, temstr, from, to))
 endfunction
 
 function <SID>SmartSpace()
@@ -455,6 +442,21 @@ function <SID>SmartSpace()
     endif
     let s:typeLen = 0
     silent!exe 'silent!return "' . space . '"'
+endfunction
+
+function <SID>SmartEnter()
+    "<Enter>在输入过程中的行为
+    if pumvisible()
+        "如果有匹配列表, 则上屏第一个匹配
+        let enter = "\<C-Y>"
+        "如果没有匹配列表, 则删除已经输入的废码
+        "现在不可能出现没有匹配的情况了
+    else
+        "完全没事干了, 再换行吧
+        let enter = "\<CR>"
+    endif
+    let s:typeLen = 0
+    silent!exe 'silent!return "' . enter . '"'
 endfunction
 
 function <SID>SmartBack()
@@ -484,21 +486,6 @@ function <SID>SmartBack()
         let s:matchFrom = -1
     endif
     silent!exe 'silent!return "' . bs . '"'
-endfunction
-
-function <SID>SmartEnter()
-    "<Enter>在输入过程中的行为
-    if pumvisible()
-        "如果有匹配列表, 则上屏第一个匹配
-        let enter = "\<C-Y>"
-        "如果没有匹配列表, 则删除已经输入的废码
-        "现在不可能出现没有匹配的情况了
-    else
-        "完全没事干了, 再换行吧
-        let enter = "\<CR>"
-    endif
-    let s:typeLen = 0
-    silent!exe 'silent!return "' . enter . '"'
 endfunction
 
 function <SID>InputEnglish()
