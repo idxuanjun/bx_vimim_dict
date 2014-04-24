@@ -1,19 +1,22 @@
 "=============================================================================
-"     FileName: bx_vimim_dict.vim (idxuanjun@qq.com)
+"     FileName: bx_vimim_dict.vim
 "         Desc: 通过录入编码输出字典对应的信息
 "               插件编码参考源自[vimim-wubi](http://code.google.com/p/vimim-wubi)
 "       Author: Xuan Jun
 "      License: GNU Lesser General Public License
 "         Link: http://blog.csdn.net/idxuanjun
 "               https://github.com/idxuanjun/bx_vimim_dict
-"      Version: 0.0.1
-"   LastChange: 2014-04-04 15:57:24
+"      Version: 0.0.2
+"   LastChange: 2014-04-23 18:12:02
 "      History:
 "=============================================================================
+" 最多四键输入
+" 中英文输入切换：插入模式下使用 CTRL-L
+" 中英文标点切换：插入模式下使用 CTRL-\
+" 空格输入中文，回车输入原英文字母
+"
 " 不好解决的问题: 各 Buffer 之间的'外观'统一
 " 未解决的问题: 有多个匹配结果, 使用非 space 选取后, 下一个 <C-Y> 会失效
-"
-" 这里的 z 不能作通配符用(事实上我基本没用过它, 所以不去实现它了)
 "
 " 你也不能用数字键去选择备选的匹配,  <C-N> <C-P> 大好.
 "
@@ -28,8 +31,6 @@
 " 第二个是 UnMapChinesePunc() 设置英文标点上字.
 " 第三个是 Exit() unmap 所有的标点要映射.
 "
-" 码表中存在没有 ljf 但有 ljfd 的情况, 但使用正则的 ^ 是可以
-" 正确匹配到的.
 if exists("b:loaded_bx_vimim_dict") || &cp || v:version < 700
     finish
 endif
@@ -48,7 +49,7 @@ function CVimIM_Dict(findstart, keyboard)
 if a:findstart
     "主要通过 s:typeLen 来控制 <BS> <Enter> <Space> 这些键的行为
     "s:typeLen 在 Init() 中定义.
-    "因为五笔最多只能输入4码, 所以在输入的过程中, <BS>等这些键的
+    "因为最多只能输入4码, 所以在输入的过程中, <BS>等这些键的
     "行为不是不变的.
     "let position = getpos('.')
     let columnNum = col('.') - 1
@@ -85,9 +86,7 @@ else
                 if s:matchFrom + i < tableLen
                     let nowLine = g:table[s:matchFrom + i]
                     let res = extend(res, split(nowLine)[1:])
-                    if s:matchFrom + i + 1 >= tableLen
-                        break
-                    elseif g:table[s:matchFrom + i + 1][:2] != nowLine[:2]
+                    if s:matchFrom + i + 1 >= tableLen || g:table[s:matchFrom + i + 1][:2] != nowLine[:2]
                         break
                     endif
                 endif
@@ -292,8 +291,7 @@ function s:Init()
     inoremap<buffer> <Space> <C-R>=<SID>SmartSpace()<CR>
     inoremap<buffer> <BS> <C-R>=<SID>SmartBack()<CR>
     inoremap<buffer> <CR> <C-R>=<SID>SmartEnter()<CR>
-    " inoremap<buffer> z <C-R>=<SID>InputEnglish()<CR>
-    inoremap<buffer> <C-\> <C-R>=<SID>ChinesePuncToggle()<CR>
+    inoremap<buffer> <C-\> <C-R>=<SID>ToggleChinesePunc()<CR>
     inoremap<buffer> <ESC> <C-R>=<SID>RZ()<CR><ESC>
     inoremap<buffer> <C-W> <C-R>=<SID>RZ()<CR><C-W>
     " 设置弹出菜单的彩色
@@ -333,7 +331,6 @@ function s:Exit()
     iunmap<buffer> <Space>
     iunmap<buffer> <BS>
     iunmap<buffer> <CR>
-    "iunmap<buffer> z
     iunmap<buffer> <C-\>
     iunmap<buffer> <ESC>
     iunmap<buffer> <C-W>
@@ -449,7 +446,7 @@ function <SID>SmartEnter()
     "<Enter>在输入过程中的行为
     if pumvisible()
         "如果有匹配列表, 则上屏第一个匹配
-        let enter = "\<C-Y>"
+        let enter = "\<C-E>"
         "如果没有匹配列表, 则删除已经输入的废码
         "现在不可能出现没有匹配的情况了
     else
@@ -489,25 +486,6 @@ function <SID>SmartBack()
     silent!exe 'silent!return "' . bs . '"'
 endfunction
 
-function <SID>InputEnglish()
-    " 使用 z 快捷输入英文, 这里还对是不是要在两边加一个空格
-    " 作了一些判断
-    let lineNum = line('.')
-    let columnNum = col('.') - 1
-    let charBefore = getline(lineNum)[columnNum - 1]
-    let english = input('Input English: ')
-    if english == ''
-        let s:typeLen = 0
-        return ''
-    elseif charBefore =~ "[\"'`<\\\[{(~ ]" || charBefore == ''
-        let s:typeLen = 0
-        return '' . english . ' '
-    else
-        let s:typeLen = 0
-        return ' ' . english . ' '
-    endif
-endfunction
-
 function s:MapChinesePunc()
     "映射中文标点
     "标点上屏也在这里映射上去
@@ -517,8 +495,8 @@ function s:MapChinesePunc()
     inoremap<buffer> ; <C-R>=<SID>PuncIn()<CR>；
     inoremap<buffer> : <C-R>=<SID>PuncIn()<CR>：
     inoremap<buffer> ? <C-R>=<SID>PuncIn()<CR>？
-    inoremap<buffer> \ <C-R>=<SID>PuncIn()<CR><C-R>=<SID>Toggle()<CR>\
-    inoremap<buffer> / <C-R>=<SID>PuncIn()<CR>、
+    inoremap<buffer> \ <C-R>=<SID>PuncIn()<CR>、
+    inoremap<buffer> / <C-R>=<SID>PuncIn()<CR>/
     inoremap<buffer> ! <C-R>=<SID>PuncIn()<CR>！
     inoremap<buffer> @ <C-R>=<SID>PuncIn()<CR>・
     inoremap<buffer> ^ <C-R>=<SID>PuncIn()<CR>……
@@ -528,14 +506,14 @@ function s:MapChinesePunc()
     inoremap<buffer> $ <C-R>=<SID>PuncIn()<CR>￥
     inoremap<buffer> ` <C-R>=<SID>PuncIn()<CR>`
     inoremap<buffer> ~ <C-R>=<SID>PuncIn()<CR>～
-    inoremap<buffer> < <C-R>=<SID>PuncIn()<CR>《》
+    inoremap<buffer> < <C-R>=<SID>PuncIn()<CR>《
     inoremap<buffer> > <C-R>=<SID>PuncIn()<CR>》
-    inoremap<buffer> ( <C-R>=<SID>PuncIn()<CR>（）<Left>
+    inoremap<buffer> ( <C-R>=<SID>PuncIn()<CR>（
     inoremap<buffer> ) <C-R>=<SID>PuncIn()<CR>）
-    inoremap<buffer> { <C-R>=<SID>PuncIn()<CR>『』<Left>
+    inoremap<buffer> { <C-R>=<SID>PuncIn()<CR>『
     inoremap<buffer> } <C-R>=<SID>PuncIn()<CR>』
-    inoremap<buffer> ' <C-R>=<SID>PuncIn()<CR>‘’<Left>
-    inoremap<buffer> " <C-R>=<SID>PuncIn()<CR>“”<Left>
+    inoremap<buffer> ' <C-R>=<SID>PuncIn()<CR><C-R>=<SID>ToggleChineseQuote("'")<CR>
+    inoremap<buffer> " <C-R>=<SID>PuncIn()<CR><C-R>=<SID>ToggleChineseQuote('"')<CR>
 endfunction
 
 function s:UnMapChinesePunc()
@@ -566,7 +544,27 @@ function s:UnMapChinesePunc()
     inoremap<buffer> " <C-R>=<SID>PuncIn()<CR>"
 endfunction
 
-function <SID>ChinesePuncToggle()
+function <SID>ToggleChineseQuote(mark)
+    " 成对中文符号切换
+    if !exists('b:singleMode')
+        let b:singleMode = 1
+    endif
+    if !exists('b:doubleMode')
+        let b:doubleMode = 1
+    endif
+
+    let punc = a:mark
+    if a:mark == "'"
+        let punc = b:singleMode == 1 ? "‘" : "’"
+        let b:singleMode = abs(b:singleMode - 1)
+    elseif a:mark == '"'
+        let punc = b:doubleMode == 1 ? "“" : "”"
+        let b:doubleMode = abs(b:doubleMode - 1)
+    endif
+    return punc
+endfunction
+
+function <SID>ToggleChinesePunc()
     "中英文标点状态的切换
     if b:chinesePunc > 0
         call s:UnMapChinesePunc()

@@ -6,7 +6,7 @@ bx_vimim_dict
 * @Author  : Xuan Jun (idxuanjun@qq.com)
 * @Link    : http://blog.csdn.net/idxuanjun
 * @Date    : 2014-04-20
-* @Version : 0.0.1
+* @Version : 0.0.2
 * @Desc    : Vim 字典输入
 *            插件编码参考源自[vimim-wubi](http://code.google.com/p/vimim-wubi)
 
@@ -24,7 +24,7 @@ bx_vimim_dict
 注意
 ----
 
-已经转换小鹤码表完成，已经可以工作，但主体程序刚改了些 BUG，尚未完工，心急的朋友可以尝试使用。
+已经转换小鹤码表完成，已经可以工作，但尚未完工，心急的朋友可以尝试使用。
 
 安装
 ----
@@ -33,6 +33,7 @@ bx_vimim_dict
 
 使用说明
 --------
-
+* 最多四键输入
+* 空格输入中文，回车输入原英文字母
 * 中英文输入切换：插入模式下使用 CTRL-L
 * 中英文标点切换：插入模式下使用 CTRL-\
