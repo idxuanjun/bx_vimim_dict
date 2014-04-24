@@ -10,20 +10,14 @@
 "   LastChange: 2014-04-23 18:12:02
 "      History:
 "=============================================================================
-" 最多四键输入
+" 最多四键输入，<C-N> <C-P> 上下选择中文
 " 中英文输入切换：插入模式下使用 CTRL-L
 " 中英文标点切换：插入模式下使用 CTRL-\
 " 空格输入中文，回车输入原英文字母
 "
-" 不好解决的问题: 各 Buffer 之间的'外观'统一
-" 未解决的问题: 有多个匹配结果, 使用非 space 选取后, 下一个 <C-Y> 会失效
-"
-" 你也不能用数字键去选择备选的匹配,  <C-N> <C-P> 大好.
-"
 " 主要功能函数是补全函数 CVimIM_Dict()
 " 读取码表及匹配码表由 GetTable() 和 GetMatchFrom 完成
 " 然后还有设置 <BS> <Space> <Enter> 行为的 Smart 函数
-" Input English 函数是用来实现 z 快捷输入英文的
 " 剩下的就是用来切换状态和设置 map 的函数
 "
 " 标点上字的功能, 涉及 map 及 unmap ,要动三个地方
@@ -36,9 +30,11 @@ if exists("b:loaded_bx_vimim_dict") || &cp || v:version < 700
 endif
 let b:loaded_bx_vimim_dict = 1
 scriptencoding utf-8
+"
+"起始在码表文件中字母的开始行
+let g:charFirst = [12, 525, 3164, 4305, 7039, 7395, 8945, 11224, 13796, 15856, 18618, 20099, 22618, 24574, 25849, 25922, 27358, 29211, 30292, 31529, 33781, 36378, 38819, 40376, 42911, 46104]
+
 let s:path=expand("<sfile>:p:h")."/"
-"let g:save_completefunc = &completefunc
-"let &completefunc = 'CVimIM_Dict'
 inoremap<silent><expr> <C-L> <SID>Toggle()
 
 function CVimIM_Dict(findstart, keyboard)
@@ -271,8 +267,6 @@ function s:Init()
     " ==========
     if !exists('g:table')
         let g:table = s:GetTable()
-        "起始字母的在码表中的开始行
-        let g:charFirst = [12, 525, 3164, 4305, 7039, 7395, 8945, 11224, 13796, 15856, 18618, 20099, 22618, 24574, 25849, 25922, 27358, 29211, 30292, 31529, 33781, 36378, 38819, 40376, 42911, 46104]
     endif
     if !exists('b:chinesePunc')
         " 标点的状态要在中英文间保持
@@ -488,7 +482,6 @@ endfunction
 
 function s:MapChinesePunc()
     "映射中文标点
-    "标点上屏也在这里映射上去
     let b:chinesePunc = 1
     inoremap<buffer> , <C-R>=<SID>PuncIn()<CR>，
     inoremap<buffer> . <C-R>=<SID>PuncIn()<CR>。
@@ -517,6 +510,7 @@ function s:MapChinesePunc()
 endfunction
 
 function s:UnMapChinesePunc()
+    " 解除映射中文标点
     let b:chinesePunc = 0
     inoremap<buffer> , <C-R>=<SID>PuncIn()<CR>,
     inoremap<buffer> . <C-R>=<SID>PuncIn()<CR>.
@@ -544,26 +538,6 @@ function s:UnMapChinesePunc()
     inoremap<buffer> " <C-R>=<SID>PuncIn()<CR>"
 endfunction
 
-function <SID>ToggleChineseQuote(mark)
-    " 成对中文符号切换
-    if !exists('b:singleMode')
-        let b:singleMode = 1
-    endif
-    if !exists('b:doubleMode')
-        let b:doubleMode = 1
-    endif
-
-    let punc = a:mark
-    if a:mark == "'"
-        let punc = b:singleMode == 1 ? "‘" : "’"
-        let b:singleMode = abs(b:singleMode - 1)
-    elseif a:mark == '"'
-        let punc = b:doubleMode == 1 ? "“" : "”"
-        let b:doubleMode = abs(b:doubleMode - 1)
-    endif
-    return punc
-endfunction
-
 function <SID>ToggleChinesePunc()
     "中英文标点状态的切换
     if b:chinesePunc > 0
@@ -572,6 +546,23 @@ function <SID>ToggleChinesePunc()
         call s:MapChinesePunc()
     endif
     return ''
+endfunction
+
+function <SID>ToggleChineseQuote(mark)
+    " 中文引号成对切换
+    if a:mark == "'"
+        if !exists('b:singleMode')
+            let b:singleMode = 0
+        endif
+        let b:singleMode = abs(b:singleMode - 1)
+        return b:singleMode == 1 ? "‘" : "’"
+    elseif a:mark == '"'
+        if !exists('b:doubleMode')
+            let b:doubleMode = 0
+        endif
+        let b:doubleMode = abs(b:doubleMode - 1)
+        return b:doubleMode == 1 ? "“" : "”"
+    endif
 endfunction
 
 function s:WTF()
