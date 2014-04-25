@@ -30,9 +30,15 @@ if exists("b:loaded_bx_vimim_dict") || &cp || v:version < 700
 endif
 let b:loaded_bx_vimim_dict = 1
 scriptencoding utf-8
-"
-"起始在码表文件中字母的开始行
-let g:charFirst = [12, 525, 3164, 4305, 7039, 7395, 8945, 11224, 13796, 15856, 18618, 20099, 22618, 24574, 25849, 25922, 27358, 29211, 30292, 31529, 33781, 36378, 38819, 40376, 42911, 46104]
+
+" 是否使用五笔
+if exists('g:bx_im_wubi_used') && g:bx_im_wubi_used
+    let g:bx_im_code_fn = 'bx_vimim_wubi.txt'
+    let g:charFirst = [1, 3477, 5016, 6371, 9569, 11098, 14620, 18428, 19911, 23828, 26116, 28500, 30475, 32402, 34864, 36276, 38711, 42226, 46442, 49453, 53687, 57072, 58912, 62805, 65013]
+else
+    let g:bx_im_code_fn = 'bx_vimim_xiaohe.txt'
+    let g:charFirst = [12, 525, 3164, 4305, 7039, 7395, 8945, 11224, 13796, 15856, 18618, 20099, 22618, 24574, 25849, 25922, 27358, 29211, 30292, 31529, 33781, 36378, 38819, 40376, 42911, 46104]
+endif
 
 let s:path=expand("<sfile>:p:h")."/"
 inoremap<silent><expr> <C-L> <SID>Toggle()
@@ -98,7 +104,7 @@ endfunction
 
 function s:GetTable()
     "读取码表
-    let tableFile = s:path . 'bx_vimim_dict.txt'
+    let tableFile = s:path . g:bx_im_code_fn
     try
         let table = readfile(tableFile)
     catch /E484:/
@@ -165,7 +171,9 @@ function s:MapAnyKeys()
     inoremap<buffer><silent> w w<C-R>=<SID>AnyKey('w')<CR>
     inoremap<buffer><silent> x x<C-R>=<SID>AnyKey('x')<CR>
     inoremap<buffer><silent> y y<C-R>=<SID>AnyKey('y')<CR>
-    inoremap<buffer><silent> z z<C-R>=<SID>AnyKey('z')<CR>
+    if !exists('g:bx_im_wubi_used') || g:bx_im_wubi_used == 0
+        inoremap<buffer><silent> z z<C-R>=<SID>AnyKey('z')<CR>
+    endif
 endfunction
 
 function s:UnMapAnyKeys()
@@ -194,7 +202,9 @@ function s:UnMapAnyKeys()
     iunmap<buffer> w
     iunmap<buffer> x
     iunmap<buffer> y
-    iunmap<buffer> z
+    if !exists('g:bx_im_wubi_used') || g:bx_im_wubi_used == 0
+        iunmap<buffer> z
+    endif
 endfunction
 
 function <SID>Toggle()
