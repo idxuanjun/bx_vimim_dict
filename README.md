@@ -12,8 +12,8 @@ bx_vimim_dict
 
 ---------------------------------------------------------------------------
 
-说明
-----
+插件说明
+--------
 
 吐槽一下，Vim 对非字母输入的用户来说太糟心了，让行云流水的输入变得磕磕碰碰的异常难受。曾经停用了两次 Vim 的使用，又舍不得捡了回来，输入法是停用最大的原因，很有些鸡肋的感觉。就算你的英文好也麻烦的很，总不能你写的都是代码和英文文档吧。不管如何，在我的周围里需要使用中文的机会太多了……
 
@@ -38,11 +38,11 @@ bx_vimim_dict
 
 * 程序已初步调试完成，进入试用阶段。
 
-安装
-----
+插件安装
+--------
 
-* 插件管理器（Vundle）：增加配置语句 Plugin 'idxuanjun/bx_vimim_dict'
-* 下载：[Github](https://github.com/idxuanjun/bx_vimim_dict) 。点击右下角“Download ZIP”，解压后把 bx_vimim_dict.vim 和字典文件 bx_vimim_*.txt 放到 vim 的 plugin 目录下即可。
+* 使用插件管理器（Vundle）：增加配置语句 Plugin 'idxuanjun/bx_vimim_dict'
+* 手工下载：[Github](https://github.com/idxuanjun/bx_vimim_dict) 。点击右下角“Download ZIP”，解压后把 bx_vimim_dict.vim 和字典文件 bx_vimim_*.txt 放到 vim 的 plugin 目录下即可。
 
 使用说明
 --------
