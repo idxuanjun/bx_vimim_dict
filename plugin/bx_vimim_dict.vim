@@ -7,8 +7,9 @@
 "         Link: http://blog.csdn.net/idxuanjun
 "               https://github.com/idxuanjun/bx_vimim_dict
 "      Version: 0.0.2
-"   LastChange: 2014-04-23 18:12:02
+"   LastChange: 2014-04-28 11:59:52
 "      History:
+"               2014-04-24：程序已初步调试完成，进入试用阶段；
 "=============================================================================
 " 最多四键输入，<C-N> <C-P> 上下选择中文
 " 中英文输入切换：插入模式下使用 CTRL-L
@@ -34,13 +35,13 @@ scriptencoding utf-8
 " 是否使用五笔
 if exists('g:bx_im_wubi_used') && g:bx_im_wubi_used
     let g:bx_im_code_fn = 'bx_vimim_wubi.txt'
-    let g:charFirst = [1, 3477, 5016, 6371, 9569, 11098, 14620, 18428, 19911, 23828, 26116, 28500, 30475, 32402, 34864, 36276, 38711, 42226, 46442, 49453, 53687, 57072, 58912, 62805, 65013]
+    let g:bm_im_charfirst = [1, 3477, 5016, 6371, 9569, 11098, 14620, 18428, 19911, 23828, 26116, 28500, 30475, 32402, 34864, 36276, 38711, 42226, 46442, 49453, 53687, 57072, 58912, 62805, 65013]
 else
     let g:bx_im_code_fn = 'bx_vimim_xiaohe.txt'
-    let g:charFirst = [12, 525, 3164, 4305, 7039, 7395, 8945, 11224, 13796, 15856, 18618, 20099, 22618, 24574, 25849, 25922, 27358, 29211, 30292, 31529, 33781, 36378, 38819, 40376, 42911, 46104]
+    let g:bm_im_charfirst = [12, 525, 3164, 4305, 7039, 7395, 8945, 11224, 13796, 15856, 18618, 20099, 22618, 24574, 25849, 25922, 27358, 29211, 30292, 31529, 33781, 36378, 38819, 40376, 42911, 46104]
 endif
 
-let s:path=expand("<sfile>:p:h")."/"
+let s:path = expand("<sfile>:p:h") . "/"
 inoremap<silent><expr> <C-L> <SID>Toggle()
 
 function CVimIM_Dict(findstart, keyboard)
@@ -66,19 +67,19 @@ else
         "有匹配的情况下, 做扩展的预匹配
         "扩展匹配的一个标准是, 词条平均为9条, 即再扩展8条词条
         let res = []
-        let tableLen = len(g:table)
+        let tableLen = len(g:bx_im_table)
         if s:typeLen < 2
             "1码的情况, 直接扩展到2码, 直接往后多匹配5条
             for i in range(5)
                 if s:matchFrom + i < tableLen
-                    let res = extend(res, split(g:table[s:matchFrom + i])[1:])
+                    let res = extend(res, split(g:bx_im_table[s:matchFrom + i])[1:])
                 endif
             endfor
         elseif s:typeLen < 3
             "2码情况, 直接扩展到3码, 直接往后多匹配6条
             for i in range(6)
                 if s:matchFrom + i < tableLen
-                    let res = extend(res, split(g:table[s:matchFrom + i])[1:])
+                    let res = extend(res, split(g:bx_im_table[s:matchFrom + i])[1:])
                 endif
             endfor
         elseif s:typeLen < 4
@@ -86,16 +87,16 @@ else
             "如果6条内同前3码的匹配不足, 则直接返回.
             for i in range(6)
                 if s:matchFrom + i < tableLen
-                    let nowLine = g:table[s:matchFrom + i]
+                    let nowLine = g:bx_im_table[s:matchFrom + i]
                     let res = extend(res, split(nowLine)[1:])
-                    if s:matchFrom + i + 1 >= tableLen || g:table[s:matchFrom + i + 1][:2] != nowLine[:2]
+                    if s:matchFrom + i + 1 >= tableLen || g:bx_im_table[s:matchFrom + i + 1][:2] != nowLine[:2]
                         break
                     endif
                 endif
             endfor
         elseif s:typeLen < 5
             "4码的情况不用扩展
-            let res = extend(res, split(g:table[s:matchFrom])[1:])
+            let res = extend(res, split(g:bx_im_table[s:matchFrom])[1:])
         endif
         return res
     endif
@@ -114,34 +115,34 @@ function s:GetTable()
 endfunction
 
 function s:GetMatchFrom(keyboard)
-    "把参数 keyboard 拿到 g:table 去匹配，返回字典内的行
+    "把参数 keyboard 拿到 g:bx_im_table 去匹配，返回字典内的行
     let patterns = '^' . a:keyboard
-    let charFirstIndex = char2nr(a:keyboard[0]) - 97
+    let bm_im_charfirstIndex = char2nr(a:keyboard[0]) - 97
     let keyboardLen = len(a:keyboard)
 
     if keyboardLen < 1
         return -1
     elseif keyboardLen < 2
         "1码直接取存好的各字母起始行
-        return g:charFirst[charFirstIndex]-1
+        return g:bm_im_charfirst[bm_im_charfirstIndex]-1
     elseif keyboardLen < 3
         "2码从头字母的起始行开始匹配
-        return match(g:table, patterns, g:charFirst[charFirstIndex]-1)
+        return match(g:bx_im_table, patterns, g:bm_im_charfirst[bm_im_charfirstIndex]-1)
     elseif keyboardLen < 4
         "3码从上一个匹配行(2码或4码)开始匹配.
         if s:matchFrom > 0
             "从2码过来的话, 直接用2码的结果
-            return match(g:table, patterns, s:matchFrom)
+            return match(g:bx_im_table, patterns, s:matchFrom)
         else
             "用<BS>从4码过来的话, 只能重新查了.
-            return match(g:table, patterns, g:charFirst[charFirstIndex] - 1)
+            return match(g:bx_im_table, patterns, g:bm_im_charfirst[bm_im_charfirstIndex] - 1)
         endif
     elseif keyboardLen < 5
         "4码从上一个匹配行(3码)开始匹配, 如果3码没有匹配直接返回-1
         if s:matchFrom < 0
             return -1
         else
-            return match(g:table, patterns, s:matchFrom)
+            return match(g:bx_im_table, patterns, s:matchFrom)
     endif
 endfunction
 
@@ -275,8 +276,8 @@ function s:Init()
     let b:save_paste = &paste
     set nopaste
     " ==========
-    if !exists('g:table')
-        let g:table = s:GetTable()
+    if !exists('g:bx_im_table')
+        let g:bx_im_table = s:GetTable()
     endif
     if !exists('b:chinesePunc')
         " 标点的状态要在中英文间保持
@@ -391,7 +392,7 @@ function <SID>AnyKey(key)
         call s:RefreshMatch()
         "前4码肯定有匹配, 则先保存前4码的第一个匹配, 用这个匹配去
         "代替前4码, 再重新匹配第5码
-        let word = split(g:table[s:matchFrom])[1]
+        let word = split(g:bx_im_table[s:matchFrom])[1]
         "这里不能是四个<BS>, 不知道为什么!
         let temp = "\<Left>\<Del>\<BS>\<BS>\<BS>" . word . "\<Right>\<C-X>\<C-U>\<C-P>\<Down>"
         let s:matchFrom = s:GetMatchFrom(a:key)
