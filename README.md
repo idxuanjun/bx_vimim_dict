@@ -39,8 +39,8 @@ bx_vimim_dict
 安装
 ----
 
-下载：[Github](https://github.com/idxuanjun/bx_vimim_dict) 。
-把 bx_vimim_dict.vim 和字典文件 bx_vimim_*.txt 放到 vim 的 plugin 目录下即可。
+* 插件管理器（Vundle）：增加配置语句 Plugin 'idxuanjun/bx_vimim_dict'
+* 下载：[Github](https://github.com/idxuanjun/bx_vimim_dict) 。点击右下角“Download ZIP”，解压后把 bx_vimim_dict.vim 和字典文件 bx_vimim_*.txt 放到 vim 的 plugin 目录下即可。
 
 使用说明
 --------
