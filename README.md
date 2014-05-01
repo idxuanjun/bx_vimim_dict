@@ -1,11 +1,11 @@
 >======================================================================
 >*   FileName: README.md
 >*       Desc: Vim 字典输入
->*             插件编码参考源自[vimim-wubi](http://code.google.com/p/vimim-wubi)
+>              插件编码参考源自[vimim-wubi](http://code.google.com/p/vimim-wubi)
 >*     Author: Xuan Jun (idxuanjun@qq.com)
 >*       Link: http://idxuanjun.github.io
 >*    Version: 0.1.0
->* LastChange: 2014-05-01 21:04:28
+>* LastChange: 2014-05-01 21:18:55
 >*    History:
 >======================================================================
 
