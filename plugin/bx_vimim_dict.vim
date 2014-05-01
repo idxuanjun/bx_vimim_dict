@@ -1,16 +1,15 @@
-"=============================================================================
-"     FileName: bx_vimim_dict.vim
-"         Desc: 通过录入编码输出字典对应的信息
-"               插件编码参考源自[vimim-wubi](http://code.google.com/p/vimim-wubi)
-"       Author: Xuan Jun
-"      License: GNU Lesser General Public License
-"         Link: http://blog.csdn.net/idxuanjun
-"               https://github.com/idxuanjun/bx_vimim_dict
-"      Version: 0.0.2
-"   LastChange: 2014-04-28 11:59:52
-"      History:
-"               2014-04-24：程序已初步调试完成，进入试用阶段；
-"=============================================================================
+"======================================================================
+"       FileName: bx_vimim_dict.vim
+"           Desc: 通过录入编码输出字典对应的信息
+"         Author: Xuan Jun (idxuanjun@qq.com)
+"        License: GNU Lesser General Public License
+"           Link: http://idxuanjun.github.io
+"        Version: 0.1.0
+"     LastChange: 2014-05-01 21:02:03
+"        History:
+"                 2014-04-24：程序已初步调试完成，进入试用阶段；
+"======================================================================
+
 " 最多四键输入，<C-N> <C-P> 上下选择中文
 " 中英文输入切换：插入模式下使用 CTRL-L
 " 中英文标点切换：插入模式下使用 CTRL-\
