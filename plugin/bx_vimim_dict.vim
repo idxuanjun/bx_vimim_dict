@@ -347,11 +347,11 @@ function s:Exit()
     iunmap<buffer> \
     iunmap<buffer> /
     iunmap<buffer> !
-    iunmap<buffer> @
+    " iunmap<buffer> @
     iunmap<buffer> ^
     iunmap<buffer> _
-    iunmap<buffer> #
-    iunmap<buffer> %
+    " iunmap<buffer> #
+    " iunmap<buffer> %
     iunmap<buffer> $
     iunmap<buffer> `
     iunmap<buffer> ~
